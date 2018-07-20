@@ -1,7 +1,7 @@
 'use strict';
 var app = app || {};
 
-(function (module){
+(function (module) {
 
   module.Article = Article;
 
@@ -16,7 +16,7 @@ var app = app || {};
 
   Article.all = [];
 
-  Article.prototype.toHtml = function() {
+  Article.prototype.toHtml = function () {
     var template = Handlebars.compile($('#article-template').text());
 
     this.daysAgo = parseInt((new Date() - new Date(this.published_on)) / 60 / 60 / 24 / 1000);
@@ -29,10 +29,8 @@ var app = app || {};
   Article.loadAll = articleData => {
     articleData.sort((a, b) => (new Date(b.published_on)) - (new Date(a.published_on)));
 
-    /* OLD forEach():
-    articleData.forEach(articleObject => Article.all.push(new Article(articleObject)));
-    */
-    Article.all.map(articleData => new Article(articleData) );
+    // articleData.forEach(articleObject => Article.all.push(new Article(articleObject)));
+    Article.all = articleData.map(articleObject => new Article(articleObject));
 
   };
 
@@ -63,44 +61,51 @@ var app = app || {};
 
   Article.truncateTable = callback => {
     $.ajax({
-      url: '/articles',
-      method: 'DELETE',
-    })
+        url: '/articles',
+        method: 'DELETE',
+      })
       .then(console.log)
       // REVIEW: Check out this clean syntax for just passing 'assumed' data into a named function! The reason we can do this has to do with the way Promise.prototype.then() works. It's a little outside the scope of 301 material, but feel free to research!
       .then(callback);
   };
 
-  Article.prototype.insertRecord = function(callback) {
+  Article.prototype.insertRecord = function (callback) {
     // REVIEW: Why can't we use an arrow function here for .insertRecord()?
-    $.post('/articles', { author: this.author, author_url: this.author_url, body: this.body, category: this.category, published_on: this.published_on, title: this.title })
-      .then(console.log)
-      .then(callback);
-  };
-
-  Article.prototype.deleteRecord = function(callback) {
-    $.ajax({
-      url: `/articles/${this.article_id}`,
-      method: 'DELETE'
-    })
-      .then(console.log)
-      .then(callback);
-  };
-
-  Article.prototype.updateRecord = function(callback) {
-    $.ajax({
-      url: `/articles/${this.article_id}`,
-      method: 'PUT',
-      data: {
+    $.post('/articles', {
         author: this.author,
         author_url: this.author_url,
         body: this.body,
         category: this.category,
         published_on: this.published_on,
-        title: this.title,
-        author_id: this.author_id
-      }
-    })
+        title: this.title
+      })
+      .then(console.log)
+      .then(callback);
+  };
+
+  Article.prototype.deleteRecord = function (callback) {
+    $.ajax({
+        url: `/articles/${this.article_id}`,
+        method: 'DELETE'
+      })
+      .then(console.log)
+      .then(callback);
+  };
+
+  Article.prototype.updateRecord = function (callback) {
+    $.ajax({
+        url: `/articles/${this.article_id}`,
+        method: 'PUT',
+        data: {
+          author: this.author,
+          author_url: this.author_url,
+          body: this.body,
+          category: this.category,
+          published_on: this.published_on,
+          title: this.title,
+          author_id: this.author_id
+        }
+      })
       .then(console.log)
       .then(callback);
   };

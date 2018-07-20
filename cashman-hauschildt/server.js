@@ -7,7 +7,7 @@ const fs = require('fs');
 const express = require('express');
 const PORT = process.env.PORT || 3000;
 const app = express();
-const conString = os.platform()==='darwin' ? 'postgres://localhost:5432/kilovolt': 'postgres://postgres:root@localhost:5432/kilovolt';
+const conString = os.platform() === 'darwin' ? 'postgres://localhost:5432/kilovolt' : 'postgres://postgres:root@localhost:5432/kilovolt';
 
 const client = new pg.Client(conString);
 client.connect();
@@ -16,11 +16,17 @@ client.on('error', err => {
 });
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({
+  extended: true
+}));
 app.use(express.static('./public'));
 
-app.get('/new-article', (request, response) => response.sendFile('new.html', { root: './public' }));
-app.get('/admin', (request, response) => response.sendFile('admin.html', { root: './public' }));
+app.get('/new-article', (request, response) => response.sendFile('new.html', {
+  root: './public'
+}));
+app.get('/admin', (request, response) => response.sendFile('admin.html', {
+  root: './public'
+}));
 app.get('/articles', (request, response) => {
   let SQL = `
     SELECT * FROM articles
@@ -39,7 +45,7 @@ app.post('/articles', (request, response) => {
   let SQL = 'INSERT INTO authors(author, author_url) VALUES($1, $2) ON CONFLICT DO NOTHING';
   let values = [request.body.author, request.body.author_url];
   client.query(SQL, values,
-    function(err) {
+    function (err) {
       if (err) {
         console.error(err);
         return response.status(500).send(err);
@@ -53,7 +59,7 @@ app.post('/articles', (request, response) => {
     let SQL = `SELECT author_id FROM authors WHERE author=$1`;
     let values = [request.body.author];
     client.query(SQL, values,
-      function(err, result) {
+      function (err, result) {
         if (err) {
           console.error(err);
           return response.status(500).send(err);
@@ -78,7 +84,7 @@ app.post('/articles', (request, response) => {
     ];
 
     client.query(SQL, values,
-      function(err) {
+      function (err) {
         if (err) {
           console.error(err);
           return response.status(500).send(err);
