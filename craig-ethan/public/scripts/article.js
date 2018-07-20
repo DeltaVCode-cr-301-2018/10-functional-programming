@@ -24,6 +24,7 @@ var app = app || {};
 
     return template(this);
   };
+  module.Article = Article;
 
   Article.loadAll = articleData => {
     articleData.sort((a, b) => (new Date(b.published_on)) - (new Date(a.published_on)));
