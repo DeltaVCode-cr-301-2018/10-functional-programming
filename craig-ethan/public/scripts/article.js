@@ -55,8 +55,13 @@ var app = app || {};
 
   Article.allAuthors = () => {
     return Article.all
-      .map()
-      .reduce();
+      .map(x => x.author)
+      .reduce((arrayOfAuthors,currentAuthor)=>{
+        if(!arrayOfAuthors.includes(currentAuthor)) {
+          arrayOfAuthors.push(currentAuthor);
+        }
+        return arrayOfAuthors;
+      },[]);
 
   };
 
