@@ -66,8 +66,15 @@ var app = app || {};
   };
 
   Article.numWordsByAuthor = () => {
-    return Article.allAuthors()
-      .map();
+    return Article.allAuthors().map(currentAuthor => {
+      return {
+        name: currentAuthor,
+        numWords: Article.all
+          .filter(currentArticle=>currentArticle.author===currentAuthor)
+          .map(currentArticle=>currentArticle.body.split(' '))
+          .reduce((total, currentPara) => (total + currentPara.length), 0)
+      }
+    })
   };
 
   Article.truncateTable = callback => {
