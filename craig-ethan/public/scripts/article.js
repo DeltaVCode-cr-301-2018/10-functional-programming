@@ -55,14 +55,26 @@ var app = app || {};
 
   Article.allAuthors = () => {
     return Article.all
-      .map()
-      .reduce();
+      .map(x => x.author)
+      .reduce((arrayOfAuthors,currentAuthor)=>{
+        if(!arrayOfAuthors.includes(currentAuthor)) {
+          arrayOfAuthors.push(currentAuthor);
+        }
+        return arrayOfAuthors;
+      },[]);
 
   };
 
   Article.numWordsByAuthor = () => {
-    return Article.allAuthors()
-      .map();
+    return Article.allAuthors().map(currentAuthor => {
+      return {
+        name: currentAuthor,
+        numWords: Article.all
+          .filter(currentArticle=>currentArticle.author===currentAuthor)
+          .map(currentArticle=>currentArticle.body.split(' '))
+          .reduce((total, currentPara) => (total + currentPara.length), 0)
+      }
+    })
   };
 
   Article.truncateTable = callback => {
