@@ -44,20 +44,20 @@ var app = app || {};
 
   Article.numWordsAll = () => {
     return Article.all
-      .map()
-      .reduce();
+      .map(article => article.body.split(' '))
+      .reduce((acc, val) => val.length + acc, 0);
   };
 
-  Article.allAuthors = () => {
-    return Article.all
-      .map()
-      .reduce();
-  };
+  // Article.allAuthors = () => {
+  //   return Article.all
+  //     .map()
+  //     .reduce();
+  // };
 
-  Article.numWordsByAuthor = () => {
-    return Article.allAuthors()
-      .map();
-  };
+  // Article.numWordsByAuthor = () => {
+  //   return Article.allAuthors()
+  //     .map();
+  // };
 
   Article.truncateTable = callback => {
     $.ajax({

@@ -1,13 +1,13 @@
 'use strict';
 var app = app || {};
 
-(function (module){
+(function (module) {
   var articleView = {};
   module.articleView = articleView;
 
 
   articleView.populateFilters = () => {
-    $('article').each(function() {
+    $('article').each(function () {
       if (!$(this).hasClass('template')) {
         var val = $(this).find('address a').text();
         var optionTag = `<option value="${val}">${val}</option>`;
@@ -25,7 +25,7 @@ var app = app || {};
   };
 
   articleView.handleAuthorFilter = () => {
-    $('#author-filter').on('change', function() {
+    $('#author-filter').on('change', function () {
       if ($(this).val()) {
         $('article').hide();
         $(`article[data-author="${$(this).val()}"]`).fadeIn();
@@ -38,7 +38,7 @@ var app = app || {};
   };
 
   articleView.handleCategoryFilter = () => {
-    $('#category-filter').on('change', function() {
+    $('#category-filter').on('change', function () {
       if ($(this).val()) {
         $('article').hide();
         $(`article[data-category="${$(this).val()}"]`).fadeIn();
@@ -51,7 +51,7 @@ var app = app || {};
   };
 
   articleView.handleMainNav = () => {
-    $('nav').on('click', '.tab', function(e) {
+    $('nav').on('click', '.tab', function (e) {
       e.preventDefault();
       $('.tab-content').hide();
       $(`#${$(this).data('content')}`).fadeIn();
@@ -62,7 +62,7 @@ var app = app || {};
 
   articleView.setTeasers = () => {
     $('.article-body *:nth-of-type(n+2)').hide();
-    $('article').on('click', 'a.read-on', function(e) {
+    $('article').on('click', 'a.read-on', function (e) {
       e.preventDefault();
       if ($(this).text() === 'Read on →') {
         $(this).parent().find('*').fadeIn();
@@ -80,7 +80,7 @@ var app = app || {};
   articleView.initNewArticlePage = () => {
     $('.tab-content').show();
     $('#export-field').hide();
-    $('#article-json').on('focus', function() {
+    $('#article-json').on('focus', function () {
       this.select();
     });
 
@@ -135,7 +135,7 @@ var app = app || {};
 
   articleView.initAdminPage = () => {
     // REVIEW: We use .forEach() here because we are relying on the side-effects of the callback function: appending to the DOM. The callback is not required to return anything.
-    app.Article.numWordsByAuthor().forEach(stat => $('.author-stats').append(template(stat)));
+    // app.Article.numWordsByAuthor().forEach(stat => $('.author-stats').append(template(stat)));
 
     // REVIEW: Simply write the correct values to the page:
     $('#blog-stats .articles').text(app.Article.all.length);
