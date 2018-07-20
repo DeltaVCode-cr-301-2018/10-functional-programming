@@ -1,122 +1,123 @@
 'use strict';
 var app = app || {};
 (function(module) {
-function Article(rawDataObj) {
+  function Article(rawDataObj) {
   /* REVIEW: In Lab 8, we explored a lot of new functionality going on here. Let's re-examine the concept of context.
   Normally, "this" inside of a constructor function refers to the newly instantiated object.
   However, in the function we're passing to forEach, "this" would normally refer to "undefined" in strict mode. As a result, we had to pass a second argument to forEach to make sure our "this" was still referring to our instantiated object.
   One of the primary purposes of lexical arrow functions, besides cleaning up syntax to use fewer lines of code, is to also preserve context. That means that when you declare a function using lexical arrows, "this" inside the function will still be the same "this" as it was outside the function.
   As a result, we no longer have to pass in the optional "this" argument to forEach!*/
-  Object.keys(rawDataObj).forEach(key => this[key] = rawDataObj[key]);
-}
+    Object.keys(rawDataObj).forEach(key => this[key] = rawDataObj[key]);
+  }
+  module.Article = Article;
 
-Article.all = [];
+  Article.all = [];
 
-var toHtml = Article.prototype.toHtml = function() {
-  var template = Handlebars.compile($('#article-template').text());
+  var toHtml = Article.prototype.toHtml = function() {
+    var template = Handlebars.compile($('#article-template').text());
 
-  this.daysAgo = parseInt((new Date() - new Date(this.published_on)) / 60 / 60 / 24 / 1000);
-  this.publishStatus = this.published_on ? `published ${this.daysAgo} days ago` : '(draft)';
-  this.body = marked(this.body);
+    this.daysAgo = parseInt((new Date() - new Date(this.published_on)) / 60 / 60 / 24 / 1000);
+    this.publishStatus = this.published_on ? `published ${this.daysAgo} days ago` : '(draft)';
+    this.body = marked(this.body);
 
-  return template(this);
-};
+    return template(this);
+  };
 
-module.toHtml = toHtml;
+  module.toHtml = toHtml;
 
-var loadAll = Article.loadAll = articleData => {
-  articleData.sort((a, b) => (new Date(b.published_on)) - (new Date(a.published_on)));
+  var loadAll = Article.loadAll = articleData => {
+    articleData.sort((a, b) => (new Date(b.published_on)) - (new Date(a.published_on)));
 
-  /* OLD forEach():
+   //OLD forEach():
   articleData.forEach(articleObject => Article.all.push(new Article(articleObject)));
-  */
+  
 
-};
+  };
 
-module.loadAll = loadAll;
+  module.loadAll = loadAll;
 
-var fetchAll = Article.fetchAll = callback => {
-  $.get('/articles')
-    .then(results => {
-      Article.loadAll(results);
-      callback();
+  var fetchAll = Article.fetchAll = callback => {
+    $.get('/articles')
+      .then(results => {
+        Article.loadAll(results);
+        callback();
+      })
+  };
+
+  module.fetchAll = fetchAll;
+
+  var numWordsAll = Article.numWordsAll = () => {
+    return Article.all
+      .map()
+      .reduce();
+  };
+
+  module.numWordsAll = numWordsAll;
+
+  var allAuthors = Article.allAuthors = () => {
+    return Article.all
+      .map()
+      .reduce();
+  };
+
+  module.allAuthors = allAuthors;
+
+  var numWordsByAuthor = Article.numWordsByAuthor = () => {
+    return Article.allAuthors()
+      .map();
+  };
+
+  module.numWordsByAuthor = numWordsByAuthor;
+
+  var truncateTable = Article.truncateTable = callback => {
+    $.ajax({
+      url: '/articles',
+      method: 'DELETE',
     })
-};
-
-module.fetchAll = fetchAll;
-
-var numWordsAll = Article.numWordsAll = () => {
-  return Article.all
-    .map()
-    .reduce();
-};
-
-module.numWordsAll = numWordsAll;
-
-var allAuthors = Article.allAuthors = () => {
-  return Article.all
-    .map()
-    .reduce();
-};
-
-module.allAuthors = allAuthors;
-
-var numWordsByAuthor = Article.numWordsByAuthor = () => {
-  return Article.allAuthors()
-    .map();
-};
-
-module.numWordsByAuthor = numWordsByAuthor;
-
-var truncateTable = Article.truncateTable = callback => {
-  $.ajax({
-    url: '/articles',
-    method: 'DELETE',
-  })
-    .then(console.log)
+      .then(console.log)
     // REVIEW: Check out this clean syntax for just passing 'assumed' data into a named function! The reason we can do this has to do with the way Promise.prototype.then() works. It's a little outside the scope of 301 material, but feel free to research!
-    .then(callback);
-};
+      .then(callback);
+  };
 
-module.truncateTable = truncateTable;
+  module.truncateTable = truncateTable;
 
-var insertRecord = Article.prototype.insertRecord = function(callback) {
+  var insertRecord = Article.prototype.insertRecord = function(callback) {
   // REVIEW: Why can't we use an arrow function here for .insertRecord()?
-  $.post('/articles', { author: this.author, author_url: this.author_url, body: this.body, category: this.category, published_on: this.published_on, title: this.title })
-    .then(console.log)
-    .then(callback);
-};
+    $.post('/articles', { author: this.author, author_url: this.author_url, body: this.body, category: this.category, published_on: this.published_on, title: this.title })
+      .then(console.log)
+      .then(callback);
+  };
 
-module.insertRecord = insertRecord;
+  module.insertRecord = insertRecord;
 
-var deleteRecord = Article.prototype.deleteRecord = function(callback) {
-  $.ajax({
-    url: `/articles/${this.article_id}`,
-    method: 'DELETE'
-  })
-    .then(console.log)
-    .then(callback);
-};
+  var deleteRecord = Article.prototype.deleteRecord = function(callback) {
+    $.ajax({
+      url: `/articles/${this.article_id}`,
+      method: 'DELETE'
+    })
+      .then(console.log)
+      .then(callback);
+  };
 
-module.deleteRecord = deleteRecord;
+  module.deleteRecord = deleteRecord;
 
-var updateRecord = Article.prototype.updateRecord = function(callback) {
-  $.ajax({
-    url: `/articles/${this.article_id}`,
-    method: 'PUT',
-    data: {
-      author: this.author,
-      author_url: this.author_url,
-      body: this.body,
-      category: this.category,
-      published_on: this.published_on,
-      title: this.title,
-      author_id: this.author_id
-    }
-  })
-    .then(console.log)
-    .then(callback);
-};
+  var updateRecord = Article.prototype.updateRecord = function(callback) {
+    $.ajax({
+      url: `/articles/${this.article_id}`,
+      method: 'PUT',
+      data: {
+        author: this.author,
+        author_url: this.author_url,
+        body: this.body,
+        category: this.category,
+        published_on: this.published_on,
+        title: this.title,
+        author_id: this.author_id
+      }
+    })
+      .then(console.log)
+      .then(callback);
+  };
 
-module.updateRecord = updateRecord;
+  module.updateRecord = updateRecord;
 })(app);
