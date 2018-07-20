@@ -47,14 +47,17 @@ var app = app || {};
 
   Article.numWordsAll = () => {
     return Article.all
-      .map()
-      .reduce();
+      .map(x => x.body.split(' '))
+      .reduce((total, currentPara) => (total + currentPara.length), 0);
+
+
   };
 
   Article.allAuthors = () => {
     return Article.all
       .map()
       .reduce();
+
   };
 
   Article.numWordsByAuthor = () => {
