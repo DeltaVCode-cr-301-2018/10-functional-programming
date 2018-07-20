@@ -29,15 +29,17 @@ var app = app || {};
   Article.loadAll = articleData => {
     articleData.sort((a, b) => (new Date(b.published_on)) - (new Date(a.published_on)));
 
-  /* OLD forEach():
+    /* OLD forEach():
   articleData.forEach(articleObject => Article.all.push(new Article(articleObject)));
   */
-
+    Article.all = articleData.map( articleObject => new Article(articleObject));
   };
 
   Article.fetchAll = callback => {
+    //console.log('its working');
     $.get('/articles')
       .then(results => {
+        console.log(results);
         Article.loadAll(results);
         callback();
       })
