@@ -48,23 +48,35 @@ var app = app || {};
 
   var numWordsAll = Article.numWordsAll = () => {
     return Article.all
-      .map()
-      .reduce();
+      .map(article => article.body.split(' '))
+      .reduce((total, current) => total + current.length,
+        0)
   };
 
   module.numWordsAll = numWordsAll;
 
   var allAuthors = Article.allAuthors = () => {
     return Article.all
-      .map()
-      .reduce();
+      .map(article => article.author)
+      .reduce((total, current) => {
+        if (!total.includes(current));
+        total.push(current);
+        
+        
+      },[]);
   };
 
   module.allAuthors = allAuthors;
 
   var numWordsByAuthor = Article.numWordsByAuthor = () => {
-    return Article.allAuthors()
-      .map();
+    return Article.allAuthors().map(author =>{
+      return {
+        name: author,
+        numWords: Article.all.filter(article => article.author = author)
+          .map(article => article.body.split(' '))
+          .reduce((total, current) => total + current.length, 0)
+      }
+    })
   };
 
   module.numWordsByAuthor = numWordsByAuthor;
