@@ -24,19 +24,22 @@ var app = app || {};
 
     return template(this);
   };
+  module.Article = Article;
 
   Article.loadAll = articleData => {
     articleData.sort((a, b) => (new Date(b.published_on)) - (new Date(a.published_on)));
 
-  /* OLD forEach():
+    /* OLD forEach():
   articleData.forEach(articleObject => Article.all.push(new Article(articleObject)));
   */
-
+    Article.all = articleData.map( articleObject => new Article(articleObject));
   };
 
   Article.fetchAll = callback => {
+    //console.log('its working');
     $.get('/articles')
       .then(results => {
+        console.log(results);
         Article.loadAll(results);
         callback();
       })
@@ -44,14 +47,17 @@ var app = app || {};
 
   Article.numWordsAll = () => {
     return Article.all
-      .map()
-      .reduce();
+      .map(x => x.body.split(' '))
+      .reduce((total, currentPara) => (total + currentPara.length), 0);
+
+
   };
 
   Article.allAuthors = () => {
     return Article.all
       .map()
       .reduce();
+
   };
 
   Article.numWordsByAuthor = () => {

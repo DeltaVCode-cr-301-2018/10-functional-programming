@@ -5,7 +5,8 @@ var app = app || {};
 (function (module) {
 
   var articleView = {};
-
+  module.articleView = articleView;
+  
   articleView.populateFilters = () => {
     $('article').each(function() {
       if (!$(this).hasClass('template')) {
@@ -92,7 +93,7 @@ var app = app || {};
     var article;
     $('#articles').empty();
 
-    article = new app.Article({
+    article = new module.Article({
       title: $('#article-title').val(),
       author: $('#article-author').val(),
       author_url: $('#article-author-url').val(),
@@ -107,7 +108,7 @@ var app = app || {};
 
   articleView.submit = event => {
     event.preventDefault();
-    let article = new app.Article({
+    let article = new module.Article({
       title: $('#article-title').val(),
       author: $('#article-author').val(),
       author_url: $('#article-author-url').val(),
@@ -123,7 +124,7 @@ var app = app || {};
   }
 
   articleView.initIndexPage = () => {
-    app.Article.all.forEach(a => $('#articles').append(a.toHtml()));
+    module.Article.all.forEach(a => $('#articles').append(a.toHtml()));
 
     articleView.populateFilters();
     articleView.handleCategoryFilter();
@@ -135,11 +136,11 @@ var app = app || {};
 
   articleView.initAdminPage = () => {
   // REVIEW: We use .forEach() here because we are relying on the side-effects of the callback function: appending to the DOM. The callback is not required to return anything.
-    app.Article.numWordsByAuthor().forEach(stat => $('.author-stats').append(app.template(stat)));
+    module.Article.numWordsByAuthor().forEach(stat => $('.author-stats').append(app.template(stat)));
 
     // REVIEW: Simply write the correct values to the page:
-    $('#blog-stats .articles').text(app.Article.all.length);
-    $('#blog-stats .words').text(app.Article.numWordsAll());
+    $('#blog-stats .articles').text(module.Article.all.length);
+    $('#blog-stats .words').text(module.Article.numWordsAll());
   };
 })(app);
 //app is the server but it is also our application. not in the same location, still not cool brogrammer.
