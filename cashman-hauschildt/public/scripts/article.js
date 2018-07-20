@@ -23,6 +23,7 @@ var app = app || {};
     this.publishStatus = this.published_on ? `published ${this.daysAgo} days ago` : '(draft)';
     this.body = marked(this.body);
 
+    console.log(template(this));
     return template(this);
   };
 
