@@ -1,6 +1,6 @@
 'use strict';
 var app = app || {};
-
+(function(module) {
 function Article(rawDataObj) {
   /* REVIEW: In Lab 8, we explored a lot of new functionality going on here. Let's re-examine the concept of context.
   Normally, "this" inside of a constructor function refers to the newly instantiated object.
@@ -12,7 +12,7 @@ function Article(rawDataObj) {
 
 Article.all = [];
 
-Article.prototype.toHtml = function() {
+var toHtml = Article.prototype.toHtml = function() {
   var template = Handlebars.compile($('#article-template').text());
 
   this.daysAgo = parseInt((new Date() - new Date(this.published_on)) / 60 / 60 / 24 / 1000);
@@ -22,7 +22,9 @@ Article.prototype.toHtml = function() {
   return template(this);
 };
 
-Article.loadAll = articleData => {
+module.toHtml = toHtml;
+
+var loadAll = Article.loadAll = articleData => {
   articleData.sort((a, b) => (new Date(b.published_on)) - (new Date(a.published_on)));
 
   /* OLD forEach():
@@ -31,7 +33,9 @@ Article.loadAll = articleData => {
 
 };
 
-Article.fetchAll = callback => {
+module.loadAll = loadAll;
+
+var fetchAll = Article.fetchAll = callback => {
   $.get('/articles')
     .then(results => {
       Article.loadAll(results);
@@ -39,24 +43,32 @@ Article.fetchAll = callback => {
     })
 };
 
-Article.numWordsAll = () => {
+module.fetchAll = fetchAll;
+
+var numWordsAll = Article.numWordsAll = () => {
   return Article.all
     .map()
     .reduce();
 };
 
-Article.allAuthors = () => {
+module.numWordsAll = numWordsAll;
+
+var allAuthors = Article.allAuthors = () => {
   return Article.all
     .map()
     .reduce();
 };
 
-Article.numWordsByAuthor = () => {
+module.allAuthors = allAuthors;
+
+var numWordsByAuthor = Article.numWordsByAuthor = () => {
   return Article.allAuthors()
     .map();
 };
 
-Article.truncateTable = callback => {
+module.numWordsByAuthor = numWordsByAuthor;
+
+var truncateTable = Article.truncateTable = callback => {
   $.ajax({
     url: '/articles',
     method: 'DELETE',
@@ -66,14 +78,18 @@ Article.truncateTable = callback => {
     .then(callback);
 };
 
-Article.prototype.insertRecord = function(callback) {
+module.truncateTable = truncateTable;
+
+var insertRecord = Article.prototype.insertRecord = function(callback) {
   // REVIEW: Why can't we use an arrow function here for .insertRecord()?
   $.post('/articles', { author: this.author, author_url: this.author_url, body: this.body, category: this.category, published_on: this.published_on, title: this.title })
     .then(console.log)
     .then(callback);
 };
 
-Article.prototype.deleteRecord = function(callback) {
+module.insertRecord = insertRecord;
+
+var deleteRecord = Article.prototype.deleteRecord = function(callback) {
   $.ajax({
     url: `/articles/${this.article_id}`,
     method: 'DELETE'
@@ -82,7 +98,9 @@ Article.prototype.deleteRecord = function(callback) {
     .then(callback);
 };
 
-Article.prototype.updateRecord = function(callback) {
+module.deleteRecord = deleteRecord;
+
+var updateRecord = Article.prototype.updateRecord = function(callback) {
   $.ajax({
     url: `/articles/${this.article_id}`,
     method: 'PUT',
@@ -99,3 +117,6 @@ Article.prototype.updateRecord = function(callback) {
     .then(console.log)
     .then(callback);
 };
+
+module.updateRecord = updateRecord;
+})(app);
