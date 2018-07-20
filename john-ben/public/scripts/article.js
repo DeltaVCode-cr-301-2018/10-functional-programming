@@ -41,7 +41,7 @@ var app = app || {};
 
   Article.numWordsAll = () => {
     return Article.all
-      .map()
+      .map( )
       .reduce();
   };
 
