@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="styles/modules.css">
     <link rel="icon" type="image/x-icon" href="https://avatars2.githubusercontent.com/u/18607604?v=3&s=200">
     <script id = 'adminTemplate' type='text/x-handlebars-template'>
-      <li>{{author}} typed {{numWordsByAuthor}} amount of words</li>
+      <li>{{name}} typed {{numWords}} amount of words</li>
     </script>
   </head>
   <body>
@@ -51,7 +51,7 @@
     <script src="scripts/article.js"></script>
     <script src="scripts/articleView.js"></script>
     <script>
-      app.Article.fetchAll();
+      app.Article.fetchAll(app.articleView.initAdminPage);
     </script>
   </body>
 </html>

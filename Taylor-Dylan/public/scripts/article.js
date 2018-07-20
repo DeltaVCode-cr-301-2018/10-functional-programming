@@ -36,7 +36,7 @@ var app = app || {};
 
   module.loadAll = loadAll;
 
-  var fetchAll = Article.fetchAll = callback => {
+  Article.fetchAll = callback => {
     $.get('/articles')
       .then(results => {
         Article.loadAll(results);
@@ -44,7 +44,6 @@ var app = app || {};
       })
   };
 
-  module.fetchAll = fetchAll;
 
   var numWordsAll = Article.numWordsAll = () => {
     return Article.all
@@ -59,8 +58,11 @@ var app = app || {};
     return Article.all
       .map(article => article.author)
       .reduce((total, current) => {
-        if (!total.includes(current));
-        total.push(current);
+        console.log(total);
+        if (!total.includes(current))
+          total.push(current);
+        return total;
+        
         
         
       },[]);
@@ -72,7 +74,7 @@ var app = app || {};
     return Article.allAuthors().map(author =>{
       return {
         name: author,
-        numWords: Article.all.filter(article => article.author = author)
+        numWords: Article.all.filter(article => article.author === author)
           .map(article => article.body.split(' '))
           .reduce((total, current) => total + current.length, 0)
       }
