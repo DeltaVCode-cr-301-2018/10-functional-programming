@@ -48,16 +48,28 @@ var app = app || {};
       .reduce((acc, val) => val.length + acc, 0);
   };
 
-  // Article.allAuthors = () => {
-  //   return Article.all
-  //     .map()
-  //     .reduce();
-  // };
+  Article.allAuthors = () => {
+    return Article.all
+      .map(article => article.author)
+      // .filter(function (value, index, self) {
+      //   return self.indexOf(value) === index;
+      // });
+      .reduce((acc, author) => acc.includes(author) ? acc : [...acc, author], []);
+  };
 
-  // Article.numWordsByAuthor = () => {
-  //   return Article.allAuthors()
-  //     .map();
-  // };
+  Article.numWordsByAuthor = () => {
+    return Article.allAuthors()
+      // for each author, create an object that contains two properties
+      .map(author => {
+        return {
+          "authorName": author,
+          "numberWords": Article.all
+            .filter(articleObj => articleObj.author === author)
+            .map(article => article.body.split(' '))
+            .reduce((acc, val) => val.length + acc, 0)
+        }
+      });
+  };
 
   Article.truncateTable = callback => {
     $.ajax({
