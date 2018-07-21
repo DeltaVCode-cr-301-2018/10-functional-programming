@@ -27,7 +27,7 @@ var app = app || {};
     articleData.sort((a, b) => (new Date(b.published_on)) - (new Date(a.published_on)));
 
 
-    Article.all = articleData.map(articleObject => (new Article(articleObject)));
+    Article.all = articleData.map(articleObject => new Article(articleObject));
 
   };
 
@@ -41,19 +41,36 @@ var app = app || {};
 
   Article.numWordsAll = () => {
     return Article.all
-      .map( )
-      .reduce();
+      .map(article => article.body.split(' '))
+      .reduce((total, current) => {
+        return total + current.length
+      },0);
   };
 
   Article.allAuthors = () => {
     return Article.all
-      .map()
-      .reduce();
+      .map((article) => {
+        return article.author
+      })
+      .reduce((uniqueArray, currentAuthor) => {
+        if (!uniqueArray.includes(currentAuthor)) {
+          uniqueArray.push(currentAuthor)
+        }
+        return uniqueArray;
+      },[]);
   };
 
   Article.numWordsByAuthor = () => {
-    return Article.allAuthors()
-      .map();
+    return Article.allAuthors().map(author => {
+      return {
+        name: author,
+        numWords: Article.all.filter(article => article.author === author)
+          .map(article => article.body.split(' '))
+          .reduce((total, current) => {
+            return total +current.length
+          },0)
+      }
+    })
   };
 
   Article.truncateTable = callback => {
